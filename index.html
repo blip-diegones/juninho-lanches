@@ -3,148 +3,170 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lanchonete - Cardápio Digital</title>
+  <title>Juninho Lanches | São Lourenço</title>
   
-  <!-- Tailwind CSS via CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Ícones Lucide -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  
-  <!-- Fontes do Google -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons & QR Code Generator -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
-          fontFamily: {
-            sans: ['Plus Jakarta Sans', 'sans-serif'],
-          },
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
           colors: {
-            brand: {
-              red: '#E53E3E',
-              gold: '#ECC94B',
-              dark: '#0F0F12',
-            },
-            dark: {
-              800: '#18181B',
-              900: '#121215',
-              950: '#09090B',
-            }
+            dark: { 950: '#090909', 900: '#121212', 800: '#1A1A1A', 700: '#2A2A2A' },
+            brand: { red: '#E63946', gold: '#F4B400' }
           }
         }
       }
     }
   </script>
 </head>
-<body class="bg-black text-neutral-100 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-red selection:text-white pb-24 md:pb-0">
+<body class="bg-dark-950 text-white font-sans antialiased selection:bg-brand-red selection:text-white">
 
-  <!-- Header / Navbar -->
-  <header class="sticky top-0 z-40 bg-black/80 backdrop-blur-xl border-b border-white/10 transition-all">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-      
-      <!-- Logo / Nome -->
+  <!-- HEADER HEADER CLEAN / APPLE STYLE -->
+  <header class="sticky top-0 z-40 bg-dark-950/80 backdrop-blur-xl border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-red to-orange-500 flex items-center justify-center font-extrabold text-white text-xl shadow-lg shadow-brand-red/30">
-          L
-        </div>
-        <div>
-          <h1 class="font-extrabold text-lg leading-tight tracking-tight text-white">Lanchonete</h1>
-          <p class="text-xs text-neutral-400 font-medium">Sabor & Qualidade</p>
-        </div>
+        <span class="text-2xl font-extrabold tracking-tighter uppercase">JUNINHO<span class="text-brand-red">.</span></span>
+        <span class="text-xs text-neutral-500 font-medium hidden sm:inline-block">· São Lourenço</span>
       </div>
 
-      <!-- Ações (Carrinho) -->
-      <div class="flex items-center gap-4">
-        <button onclick="toggleCart()" class="relative p-3 rounded-2xl bg-dark-900 hover:bg-dark-800 border border-white/10 transition flex items-center justify-center text-white">
-          <i data-lucide="shopping-bag" class="w-5 h-5"></i>
-          <span id="cart-count" class="hidden absolute -top-1.5 -right-1.5 bg-brand-red text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-black">0</span>
-        </button>
-      </div>
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-neutral-400">
+        <a href="#destaques" class="hover:text-white transition">Mais Pedidos</a>
+        <a href="#cardapio" class="hover:text-white transition">Cardápio</a>
+        <a href="#avaliacoes" class="hover:text-white transition">Avaliações</a>
+      </nav>
+
+      <button onclick="toggleCart()" class="relative bg-white text-black font-bold px-6 py-2.5 rounded-full text-sm hover:bg-brand-red hover:text-white transition-all transform hover:scale-105 flex items-center gap-2">
+        <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+        <span>Carrinho</span>
+        <span id="cart-count" class="bg-brand-red text-white text-xs px-2 py-0.5 rounded-full hidden">0</span>
+      </button>
     </div>
   </header>
 
-  <!-- Banner Hero -->
-  <section class="relative py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-    <div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-neutral-900 to-dark-950 border border-white/10 p-8 md:p-12">
-      <div class="max-w-xl space-y-4">
-        <span class="inline-block px-3 py-1 bg-brand-red/20 text-brand-red border border-brand-red/30 rounded-full text-xs font-bold uppercase tracking-wider">
-          O melhor da cidade
-        </span>
-        <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">
-          Faça seu pedido online rápido e fácil.
-        </h2>
-        <p class="text-neutral-400 text-sm md:text-base font-light">
-          Lanches artesanais, combos completos e bebidas trincando de geladas.
-        </p>
+  <!-- HERO SECTION: FOTO GIGANTE, TIPOGRAFIA FORTE E CONTRASTE -->
+  <section class="relative min-h-[85vh] flex items-center justify-center overflow-hidden py-24 px-6">
+    <div class="absolute inset-0 z-0">
+      <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=1600&auto=format&fit=crop" class="w-full h-full object-cover opacity-30 scale-105 transform hover:scale-100 transition duration-1000">
+      <div class="absolute inset-0 bg-gradient-to-t from-dark-950 via-dark-950/70 to-transparent"></div>
+    </div>
+
+    <div class="relative z-10 max-w-4xl mx-auto text-center space-y-8">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-brand-gold text-xs font-semibold tracking-wider uppercase">
+        <i data-lucide="star" class="w-3.5 h-3.5 fill-brand-gold"></i> 4.9 no Google · Chapa Quente
+      </div>
+      
+      <h1 class="text-5xl sm:text-7xl lg:text-8xl font-extrabold tracking-tight uppercase leading-[0.95]">
+        O melhor hambúrguer <br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-neutral-200 to-neutral-500">de São Lourenço.</span>
+      </h1>
+
+      <p class="text-neutral-400 text-lg sm:text-xl max-w-2xl mx-auto font-light leading-relaxed">
+        Ingredientes frescos, queijo derretido de verdade e a suculência que você respeita. Peça direto aqui e receba no conforto da sua casa.
+      </p>
+
+      <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="#cardapio" class="w-full sm:w-auto bg-brand-red text-white font-bold text-base px-8 py-4 rounded-full shadow-2xl shadow-brand-red/30 hover:bg-red-600 hover:scale-105 transition-all">
+          Ver Cardápio Completo
+        </a>
       </div>
     </div>
   </section>
 
-  <!-- Destaques -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full space-y-4">
-    <h3 class="text-lg font-bold text-white flex items-center gap-2">
-      <i data-lucide="sparkles" class="w-5 h-5 text-brand-gold"></i> Mais Pedidos
-    </h3>
-    <div id="destaques-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <!-- Injetado pelo JS -->
+  <!-- SEÇÃO MAIS PEDIDOS (BENTO GRID) -->
+  <section id="destaques" class="max-w-7xl mx-auto px-6 py-20 border-t border-white/5">
+    <div class="mb-12">
+      <h2 class="text-xs uppercase tracking-widest text-brand-gold font-bold mb-2">Favoritos da Galera</h2>
+      <p class="text-3xl font-extrabold tracking-tight">Os mais pedidos da semana</p>
+    </div>
+
+    <div id="destaques-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Injetado via JS -->
     </div>
   </section>
 
-  <!-- Navegação por Categorias (Tabs) -->
-  <section class="sticky top-20 z-30 bg-black/95 backdrop-blur-md border-y border-white/10 py-4 my-6">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div id="categories-tabs" class="flex gap-2 overflow-x-auto no-scrollbar scroll-smooth">
-        <!-- Injetado pelo JS -->
+  <!-- CARDÁPIO COMPLETO -->
+  <section id="cardapio" class="max-w-7xl mx-auto px-6 py-20 border-t border-white/5">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+      <div>
+        <h2 class="text-xs uppercase tracking-widest text-brand-red font-bold mb-2">Nosso Menu</h2>
+        <p class="text-4xl font-extrabold tracking-tight">Escolha o seu lanche</p>
+      </div>
+      
+      <!-- Fabs de Categorias -->
+      <div id="categories-tabs" class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+        <!-- Injetado via JS -->
+      </div>
+    </div>
+
+    <div id="menu-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Injetado via JS -->
+    </div>
+  </section>
+
+  <!-- PROVA SOCIAL CLEAN -->
+  <section id="avaliacoes" class="max-w-7xl mx-auto px-6 py-24 border-t border-white/5">
+    <div class="text-center max-w-2xl mx-auto mb-16">
+      <div class="flex justify-center text-brand-gold gap-1 mb-4">
+        <i data-lucide="star" class="w-5 h-5 fill-brand-gold"></i>
+        <i data-lucide="star" class="w-5 h-5 fill-brand-gold"></i>
+        <i data-lucide="star" class="w-5 h-5 fill-brand-gold"></i>
+        <i data-lucide="star" class="w-5 h-5 fill-brand-gold"></i>
+        <i data-lucide="star" class="w-5 h-5 fill-brand-gold"></i>
+      </div>
+      <h2 class="text-3xl font-extrabold tracking-tight">Quem provou, aprovou.</h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="bg-dark-900 p-8 rounded-3xl border border-white/5 space-y-4">
+        <p class="text-neutral-300 font-light italic">"O melhor hambúrguer que já comi em São Lourenço. Chega rápido e extremamente quente."</p>
+        <p class="text-sm font-bold text-white">— João V.</p>
+      </div>
+      <div class="bg-dark-900 p-8 rounded-3xl border border-white/5 space-y-4">
+        <p class="text-neutral-300 font-light italic">"Sem miséria de ingrediente. O bacon vem crocante de verdade e o atendimento é notas 10."</p>
+        <p class="text-sm font-bold text-white">— Maria F.</p>
+      </div>
+      <div class="bg-dark-900 p-8 rounded-3xl border border-white/5 space-y-4">
+        <p class="text-neutral-300 font-light italic">"Pagar pelo Pix direto no site e só esperar a entrega chegar pelo Whats facilita demais."</p>
+        <p class="text-sm font-bold text-white">— Lucas M.</p>
       </div>
     </div>
   </section>
 
-  <!-- Grid de Produtos -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-1">
-    <div id="menu-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      <!-- Injetado pelo JS -->
-    </div>
-  </main>
-
-  <!-- Drawer do Carrinho -->
-  <div id="cart-drawer" class="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-dark-900 border-l border-white/10 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col justify-between shadow-2xl">
-    
-    <!-- Topo do Carrinho -->
+  <!-- DRAWER DO CARRINHO (SLIDE OVER) -->
+  <div id="cart-drawer" class="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-dark-900 border-l border-white/10 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
     <div class="p-6 border-b border-white/10 flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <i data-lucide="shopping-bag" class="w-5 h-5 text-white"></i>
-        <h3 class="font-bold text-lg text-white">Seu Pedido</h3>
-      </div>
-      <button onclick="toggleCart()" class="p-2 rounded-xl text-neutral-400 hover:text-white hover:bg-white/5 transition">
-        <i data-lucide="x" class="w-5 h-5"></i>
+      <h3 class="text-xl font-bold tracking-tight">Seu Pedido</h3>
+      <button onclick="toggleCart()" class="text-neutral-400 hover:text-white">
+        <i data-lucide="x" class="w-6 h-6"></i>
       </button>
     </div>
 
-    <!-- Lista de Itens -->
-    <div id="cart-items" class="p-6 flex-1 overflow-y-auto space-y-4">
-      <!-- Injetado pelo JS -->
+    <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4">
+      <!-- Itens do carrinho -->
     </div>
 
-    <!-- Rodapé do Carrinho -->
-    <div class="p-6 border-t border-white/10 space-y-4 bg-dark-950">
-      <div class="flex justify-between items-center text-white font-bold text-lg">
+    <div class="p-6 border-t border-white/10 bg-dark-950 space-y-4">
+      <div class="flex justify-between items-center text-lg font-bold">
         <span>Total</span>
         <span id="cart-total" class="text-brand-gold">R$ 0,00</span>
       </div>
-      <button id="checkout-btn" disabled onclick="alert('Indo para checkout!')" class="w-full bg-brand-red disabled:opacity-50 hover:bg-red-600 text-white font-bold py-4 rounded-2xl transition shadow-lg shadow-brand-red/20 flex items-center justify-center gap-2">
-        Finalizar Pedido <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      <button onclick="startCheckout()" id="checkout-btn" disabled class="w-full bg-brand-red disabled:opacity-50 text-white font-bold py-4 rounded-2xl hover:bg-red-600 transition">
+        Avançar para Pagamento
       </button>
     </div>
   </div>
 
-  <!-- Scripts do Projeto ajustados para os caminhos atuais -->
   <script src="js/app.js"></script>
-  <script src="js/jscheckout.js"></script>
-  <script src="js/jspix.js"></script>
+  <script>lucide.createIcons();</script>
 </body>
 </html>
