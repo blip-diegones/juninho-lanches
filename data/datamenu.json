@@ -317,7 +317,7 @@
       "name": "Água sem Gás 500ml",
       "price": 4.00,
       "desc": "Garrafa de água mineral sem gás.",
-      "image": "img-bebidas/agua-sem-gas.jpg"
+      "image": "./img-bebidas/agua-sem-gas.jpg"
     },
     {
       "id": "agua-com-gas",
@@ -325,7 +325,7 @@
       "name": "Água com Gás 500ml",
       "price": 4.00,
       "desc": "Garrafa de água mineral com gás.",
-      "image": "img-bebidas/agua-com-gas.jpg"
+      "image": "./img-bebidas/agua-com-gas.jpg"
     },
     {
       "id": "refri-lata",
@@ -333,7 +333,7 @@
       "name": "Refrigerante Lata 350ml",
       "price": 8.00,
       "desc": "Escolha o sabor no checkout ou WhatsApp (Coca-Cola, Guaraná, Fanta, etc).",
-      "image": "img-bebidas/refri-lata.jpg"
+      "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80"
     },
     {
       "id": "refri-600",
@@ -341,7 +341,7 @@
       "name": "Refrigerante 600ml",
       "price": 8.50,
       "desc": "Escolha o sabor no checkout ou WhatsApp (Coca-Cola, Guaraná, Fanta, etc).",
-      "image": "img-bebidas/refri-600ml.jpg"
+      "image": "./img-bebidas/refri-600ml.jpg"
     },
     {
       "id": "refri-2l",
@@ -349,7 +349,7 @@
       "name": "Refrigerante 2 Litros",
       "price": 14.00,
       "desc": "Escolha o sabor no checkout ou WhatsApp (Coca-Cola, Guaraná, Fanta, etc).",
-      "image": "img-bebidas/refri-2l.jpg"
+      "image": "./img-bebidas/refri-2l.jpg"
     },
     {
       "id": "cerveja-latao",
@@ -357,7 +357,7 @@
       "name": "Cerveja Mega Latão 473ml",
       "price": 10.00,
       "desc": "Latão trincando de gelado.",
-      "image": "img-bebidas/cerveja-latao.jpg"
+      "image": "./img-bebidas/cerveja-latao.jpg"
     }
   ]
 }
