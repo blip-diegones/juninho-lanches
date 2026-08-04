@@ -1,4 +1,4 @@
-// Dados de reserva (fallback) com o cardápio de bebidas simplificado
+// Dados de reserva (fallback) ajustados para a estrutura atual das suas pastas
 const FALLBACK_MENU = {
   categories: [
     { id: "lanches", label: "Lanches" },
@@ -45,12 +45,12 @@ const FALLBACK_MENU = {
     { id: "fritas-queijo-bacon", cat: "porcoes", name: "Fritas com Queijo e Bacon", price: 28.00, desc: "Batata frita coberta com queijo derretido e bacon crocante.", image: "https://images.unsplash.com/photo-1585109649139-366815a0d713?w=800&auto=format&fit=crop" },
     { id: "fritas-queijo-bacon-cheddar", cat: "porcoes", name: "Fritas com Queijo, Bacon e Cheddar", price: 30.00, desc: "Batata frita coberta com queijo, bacon e molho cheddar cremoso.", badge: "Top Porção", image: "https://images.unsplash.com/photo-1585109649139-366815a0d713?w=800&auto=format&fit=crop" },
     { id: "calabresa-fritas", cat: "porcoes", name: "Calabresa Acebolada com Fritas", price: 32.00, desc: "Porção mista de calabresa acebolada acompanhada de batata frita.", image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=800&auto=format&fit=crop" },
-    { id: "agua-sem-gas", cat: "bebidas", name: "Água sem Gás", price: 4.00, desc: "Garrafa 510ml.", image: "img/bebidas/agua-sem-gas.jpg" },
-    { id: "agua-com-gas", cat: "bebidas", name: "Água com Gás", price: 4.00, desc: "Garrafa 510ml.", image: "img/bebidas/agua-com-gas.jpg" },
-    { id: "refri-lata", cat: "bebidas", name: "Refrigerante Lata", price: 8.00, desc: "Lata 350ml (Escolha o sabor ao finalizar).", image: "img/bebidas/refri-600ml.jpg" },
-    { id: "refri-600ml", cat: "bebidas", name: "Refrigerante 600ml", price: 9.00, desc: "Garrafa 600ml (Coca, Guaraná, etc. Defina o sabor ao finalizar).", image: "img/bebidas/refri-600ml.jpg" },
-    { id: "cerveja-latao", cat: "bebidas", name: "Cerveja Mega Latão", price: 10.00, desc: "Cerveja Brahma ou similar, extremamente gelada.", image: "img/bebidas/cerveja-latao.jpg" },
-    { id: "refri-2l", cat: "bebidas", name: "Refrigerante 2L", price: 16.00, desc: "Garrafa 2 Litros (Coca, Guaraná Mantiqueira, etc. Informe o sabor).", image: "img/bebidas/refri-2l.jpg" }
+    { id: "agua-sem-gas", cat: "bebidas", name: "Água sem Gás", price: 4.00, desc: "Garrafa 510ml.", image: "img-bebidas/agua-sem-gas.jpg" },
+    { id: "agua-com-gas", cat: "bebidas", name: "Água com Gás", price: 4.00, desc: "Garrafa 510ml.", image: "img-bebidas/agua-com-gas.jpg" },
+    { id: "refri-lata", cat: "bebidas", name: "Refrigerante Lata", price: 8.00, desc: "Lata 350ml (Escolha o sabor ao finalizar).", image: "img-bebidas/refri-600ml.jpg" },
+    { id: "refri-600ml", cat: "bebidas", name: "Refrigerante 600ml", price: 9.00, desc: "Garrafa 600ml (Coca, Guaraná, etc. Defina o sabor ao finalizar).", image: "img-bebidas/refri-600ml.jpg" },
+    { id: "cerveja-latao", cat: "bebidas", name: "Cerveja Mega Latão", price: 10.00, desc: "Cerveja Brahma ou similar, extremamente gelada.", image: "img-bebidas/cerveja-latao.jpg" },
+    { id: "refri-2l", cat: "bebidas", name: "Refrigerante 2L", price: 16.00, desc: "Garrafa 2 Litros (Coca, Guaraná Mantiqueira, etc. Informe o sabor).", image: "img-bebidas/refri-2l.jpg" }
   ]
 };
 
@@ -60,11 +60,12 @@ let activeCategory = 'lanches';
 
 async function init() {
   try {
-    const res = await fetch('data/menu.json');
+    // Aponta exatamente para onde o seu JSON está salvo na imagem
+    const res = await fetch('data/datamenu.json');
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     MENU_DATA = await res.json();
   } catch (e) {
-    console.warn("Não foi possível carregar via fetch (normal ao rodar direto por arquivo local file://). Usando dados internos de segurança.");
+    console.warn("Usando dados de segurança integrados.");
     MENU_DATA = FALLBACK_MENU;
   }
 
