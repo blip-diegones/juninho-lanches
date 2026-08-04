@@ -1,4 +1,4 @@
-// Dados de reserva (fallback) para o site não quebrar em testes locais (file://) ou falhas de fetch
+// Dados de reserva (fallback) com o cardápio de bebidas simplificado
 const FALLBACK_MENU = {
   categories: [
     { id: "lanches", label: "Lanches" },
@@ -45,14 +45,12 @@ const FALLBACK_MENU = {
     { id: "fritas-queijo-bacon", cat: "porcoes", name: "Fritas com Queijo e Bacon", price: 28.00, desc: "Batata frita coberta com queijo derretido e bacon crocante.", image: "https://images.unsplash.com/photo-1585109649139-366815a0d713?w=800&auto=format&fit=crop" },
     { id: "fritas-queijo-bacon-cheddar", cat: "porcoes", name: "Fritas com Queijo, Bacon e Cheddar", price: 30.00, desc: "Batata frita coberta com queijo, bacon e molho cheddar cremoso.", badge: "Top Porção", image: "https://images.unsplash.com/photo-1585109649139-366815a0d713?w=800&auto=format&fit=crop" },
     { id: "calabresa-fritas", cat: "porcoes", name: "Calabresa Acebolada com Fritas", price: 32.00, desc: "Porção mista de calabresa acebolada acompanhada de batata frita.", image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=800&auto=format&fit=crop" },
-    { id: "agua-sem-gas", cat: "bebidas", name: "Água sem Gás", price: 4.00, desc: "Garrafa de água mineral sem gás.", image: "https://images.unsplash.com/photo-1548839140-29a749e1bc4e?w=800&auto=format&fit=crop" },
-    { id: "agua-com-gas", cat: "bebidas", name: "Água com Gás", price: 4.00, desc: "Garrafa de água mineral com gás.", image: "https://images.unsplash.com/photo-1559839914-17aae19cec71?w=800&auto=format&fit=crop" },
-    { id: "refri-lata", cat: "bebidas", name: "Refrigerante Lata", price: 8.00, desc: "Lata 350ml (Sabores diversos).", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800&auto=format&fit=crop" },
-    { id: "guarana-600", cat: "bebidas", name: "Guaraná 600ml", price: 8.00, desc: "Garrafa 600ml.", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800&auto=format&fit=crop" },
-    { id: "coca-600", cat: "bebidas", name: "Coca 600ml", price: 9.00, desc: "Garrafa 600ml.", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800&auto=format&fit=crop" },
-    { id: "cerveja-latio", cat: "bebidas", name: "Cerveja Mega Latão", price: 10.00, desc: "Latão trincando de gelado.", image: "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=800&auto=format&fit=crop" },
-    { id: "guarana-2l", cat: "bebidas", name: "Guaraná 2L", price: 10.00, desc: "Garrafa de 2 Litros.", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800&auto=format&fit=crop" },
-    { id: "coca-2l", cat: "bebidas", name: "Coca-Cola 2L", price: 16.00, desc: "Garrafa de 2 Litros.", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800&auto=format&fit=crop" }
+    { id: "agua-sem-gas", cat: "bebidas", name: "Água sem Gás", price: 4.00, desc: "Garrafa 510ml.", image: "img/bebidas/agua-sem-gas.jpg" },
+    { id: "agua-com-gas", cat: "bebidas", name: "Água com Gás", price: 4.00, desc: "Garrafa 510ml.", image: "img/bebidas/agua-com-gas.jpg" },
+    { id: "refri-lata", cat: "bebidas", name: "Refrigerante Lata", price: 8.00, desc: "Lata 350ml (Escolha o sabor ao finalizar).", image: "img/bebidas/refri-600ml.jpg" },
+    { id: "refri-600ml", cat: "bebidas", name: "Refrigerante 600ml", price: 9.00, desc: "Garrafa 600ml (Coca, Guaraná, etc. Defina o sabor ao finalizar).", image: "img/bebidas/refri-600ml.jpg" },
+    { id: "cerveja-latao", cat: "bebidas", name: "Cerveja Mega Latão", price: 10.00, desc: "Cerveja Brahma ou similar, extremamente gelada.", image: "img/bebidas/cerveja-latao.jpg" },
+    { id: "refri-2l", cat: "bebidas", name: "Refrigerante 2L", price: 16.00, desc: "Garrafa 2 Litros (Coca, Guaraná Mantiqueira, etc. Informe o sabor).", image: "img/bebidas/refri-2l.jpg" }
   ]
 };
 
@@ -114,28 +112,32 @@ function renderMenu(catId) {
     return;
   }
   
-  container.innerHTML = items.map(item => `
-    <div class="bg-dark-900 rounded-3xl overflow-hidden border border-white/5 hover:border-white/20 transition-all duration-300 group flex flex-col justify-between">
-      <div>
-        <div class="h-52 overflow-hidden relative">
-          <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-          ${item.badge ? `<span class="absolute top-4 left-4 bg-brand-red text-white text-[10px] font-extrabold uppercase px-3 py-1 rounded-full tracking-wider shadow-lg">${item.badge}</span>` : ''}
-        </div>
-        <div class="p-6 space-y-2">
-          <div class="flex justify-between items-start gap-2">
-            <h3 class="font-bold text-lg text-white leading-snug">${item.name}</h3>
-            <span class="text-brand-gold font-bold text-base whitespace-nowrap">${brl(item.price)}</span>
+  container.innerHTML = items.map(item => {
+    const objectFitClass = item.cat === 'bebidas' ? 'object-contain p-4' : 'object-cover';
+
+    return `
+      <div class="bg-dark-900 rounded-3xl overflow-hidden border border-white/5 hover:border-white/20 transition-all duration-300 group flex flex-col justify-between">
+        <div>
+          <div class="h-52 overflow-hidden relative flex items-center justify-center bg-dark-950/40">
+            <img src="${item.image}" alt="${item.name}" class="w-full h-full ${objectFitClass} group-hover:scale-105 transition duration-500">
+            ${item.badge ? `<span class="absolute top-4 left-4 bg-brand-red text-white text-[10px] font-extrabold uppercase px-3 py-1 rounded-full tracking-wider shadow-lg z-10">${item.badge}</span>` : ''}
           </div>
-          <p class="text-neutral-400 text-xs leading-relaxed font-light">${item.desc || ''}</p>
+          <div class="p-6 space-y-2">
+            <div class="flex justify-between items-start gap-2">
+              <h3 class="font-bold text-lg text-white leading-snug">${item.name}</h3>
+              <span class="text-brand-gold font-bold text-base whitespace-nowrap">${brl(item.price)}</span>
+            </div>
+            <p class="text-neutral-400 text-xs leading-relaxed font-light">${item.desc || ''}</p>
+          </div>
+        </div>
+        <div class="p-6 pt-0">
+          <button onclick="addToCart('${item.id}')" class="w-full bg-white/5 hover:bg-white text-white hover:text-black font-semibold text-sm py-3 rounded-xl transition-all flex items-center justify-center gap-2">
+            <i data-lucide="plus" class="w-4 h-4"></i> Adicionar ao Pedido
+          </button>
         </div>
       </div>
-      <div class="p-6 pt-0">
-        <button onclick="addToCart('${item.id}')" class="w-full bg-white/5 hover:bg-white text-white hover:text-black font-semibold text-sm py-3 rounded-xl transition-all flex items-center justify-center gap-2">
-          <i data-lucide="plus" class="w-4 h-4"></i> Adicionar ao Pedido
-        </button>
-      </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
   
   if (window.lucide) {
     lucide.createIcons();
