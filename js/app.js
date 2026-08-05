@@ -1,3 +1,7 @@
+// CONFIGURAÇÕES DA LANCHONETE
+const WHATSAPP_NUMBER = "5535999999999"; // Coloque o número real com DDD
+const CHAVE_PIX_LANCHONETE = "suachavepix@dominio.com"; // Chave Pix cadastrada
+
 // Dados de reserva (fallback) para o site não quebrar em testes locais (file://) ou falhas de fetch
 const FALLBACK_MENU = {
   categories: [
@@ -74,7 +78,6 @@ async function init() {
   renderMenu(activeCategory);
   renderDestaques();
 
-  // Recalcula pill em mudanças de redimensionamento da janela
   window.addEventListener('resize', updatePillPosition);
 }
 
@@ -82,6 +85,7 @@ function brl(v) {
   return 'R$ ' + v.toFixed(2).replace('.', ',');
 }
 
+// RENDER CATEGORIAS + PILL DESLIZANTE
 function renderCategories() {
   const container = document.getElementById('categories-tabs');
   if (!container) return;
@@ -121,19 +125,15 @@ function switchCategory(catId) {
 
   activeCategory = catId;
 
-  // Atualiza botões
   document.querySelectorAll('.category-btn').forEach(btn => {
     btn.classList.toggle('active', btn.getAttribute('data-cat') === catId);
   });
 
-  // Anima a Pill Branca deslizando
   updatePillPosition();
 
-  // Transição do Grid com Scale + Fade + Stagger
   const grid = document.getElementById('menu-grid');
   if (grid) {
     grid.classList.add('fade-out');
-    
     setTimeout(() => {
       renderMenu(catId);
       grid.classList.remove('fade-out');
@@ -143,6 +143,7 @@ function switchCategory(catId) {
   }
 }
 
+// RENDER MENU
 function renderMenu(catId) {
   const container = document.getElementById('menu-grid');
   if (!container) return;
@@ -177,9 +178,7 @@ function renderMenu(catId) {
     </div>
   `).join('');
   
-  if (window.lucide) {
-    lucide.createIcons();
-  }
+  if (window.lucide) lucide.createIcons();
 }
 
 function renderDestaques() {
@@ -202,11 +201,10 @@ function renderDestaques() {
     </div>
   `).join('');
   
-  if (window.lucide) {
-    lucide.createIcons();
-  }
+  if (window.lucide) lucide.createIcons();
 }
 
+// CARRINHO DE COMPRAS
 function addToCart(id) {
   const item = MENU_DATA.items.find(i => i.id === id);
   if (!item) return;
@@ -270,6 +268,208 @@ function changeQty(id, delta) {
   cart[id].qty += delta;
   if (cart[id].qty <= 0) delete cart[id];
   updateCartUI();
+}
+
+// CHECKOUT & WHATSAPP
+function startCheckout() {
+  const entries = Object.values(cart);
+  if (entries.length === 0) return;
+
+  toggleCart(false);
+
+  let modal = document.getElementById('checkout-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'checkout-modal';
+    modal.className = 'fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto';
+    document.body.appendChild(modal);
+  }
+
+  const total = entries.reduce((sum, c) => sum + (c.item.price * c.qty), 0);
+
+  modal.innerHTML = `
+    <div class="bg-dark-900 border border-white/10 rounded-3xl p-6 sm:p-8 max-w-md w-full space-y-6 shadow-2xl relative">
+      <div class="flex justify-between items-center border-b border-white/10 pb-4">
+        <h3 class="text-xl font-bold text-white">Finalizar Pedido</h3>
+        <button onclick="closeCheckoutModal()" class="text-neutral-400 hover:text-white">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+
+      <form id="checkout-form" onsubmit="handleCheckoutSubmit(event, ${total})" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold uppercase text-neutral-400 mb-1">Seu Nome *</label>
+          <input type="text" id="cust-name" required placeholder="Ex: Diego" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-red">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase text-neutral-400 mb-1">Endereço de Entrega / Bairro *</label>
+          <input type="text" id="cust-address" required placeholder="Rua, Número - Bairro" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-red">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase text-neutral-400 mb-1">Forma de Pagamento *</label>
+          <select id="cust-payment" required onchange="toggleChangeInput(this.value)" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-red">
+            <option value="pix">Pix (QR Code / Copia e Cola)</option>
+            <option value="cartao_maquininha">Cartão na Entrega (Débito/Crédito)</option>
+            <option value="dinheiro">Dinheiro</option>
+          </select>
+        </div>
+
+        <div id="troco-wrapper" class="hidden">
+          <label class="block text-xs font-semibold uppercase text-neutral-400 mb-1">Precisa de troco para quanto?</label>
+          <input type="text" id="cust-troco" placeholder="Ex: R$ 50,00" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-red">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase text-neutral-400 mb-1">Observações do Pedido</label>
+          <input type="text" id="cust-obs" placeholder="Ex: Sem cebola, capricha na maionese" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-red">
+        </div>
+
+        <div class="pt-4 border-t border-white/10 flex justify-between items-center">
+          <div>
+            <span class="block text-xs text-neutral-400">Total a pagar:</span>
+            <span class="text-xl font-bold text-brand-gold">${brl(total)}</span>
+          </div>
+          <button type="submit" class="bg-brand-red text-white font-bold px-6 py-3 rounded-xl hover:bg-red-600 transition">
+            Continuar
+          </button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  if (window.lucide) lucide.createIcons();
+}
+
+function toggleChangeInput(val) {
+  const trocoWrap = document.getElementById('troco-wrapper');
+  if (trocoWrap) {
+    trocoWrap.classList.toggle('hidden', val !== 'dinheiro');
+  }
+}
+
+function closeCheckoutModal() {
+  const modal = document.getElementById('checkout-modal');
+  if (modal) modal.remove();
+}
+
+function handleCheckoutSubmit(e, total) {
+  e.preventDefault();
+
+  const name = document.getElementById('cust-name').value;
+  const address = document.getElementById('cust-address').value;
+  const payment = document.getElementById('cust-payment').value;
+  const troco = document.getElementById('cust-troco')?.value || 'Não precisa';
+  const obs = document.getElementById('cust-obs').value || 'Nenhuma';
+
+  const itemsList = Object.values(cart)
+    .map(c => `• ${c.qty}x ${c.item.name} (${brl(c.item.price * c.qty)})`)
+    .join('\n');
+
+  let paymentText = payment === 'pix' ? 'Pix' : (payment === 'dinheiro' ? `Dinheiro (Troco para: ${troco})` : 'Cartão na Entrega');
+
+  const orderData = {
+    name,
+    address,
+    paymentText,
+    itemsList,
+    obs,
+    total,
+    isPix: payment === 'pix'
+  };
+
+  if (payment === 'pix') {
+    showPixScreen(orderData);
+  } else {
+    sendToWhatsApp(orderData);
+  }
+}
+
+function showPixScreen(order) {
+  const modal = document.getElementById('checkout-modal');
+  if (!modal) return;
+
+  modal.innerHTML = `
+    <div class="bg-dark-900 border border-white/10 rounded-3xl p-6 sm:p-8 max-w-md w-full space-y-6 shadow-2xl text-center relative">
+      <button onclick="closeCheckoutModal()" class="absolute top-6 right-6 text-neutral-400 hover:text-white">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+
+      <div>
+        <span class="text-xs font-bold uppercase tracking-widest text-brand-gold">Pagamento Pix</span>
+        <h3 class="text-2xl font-extrabold text-white mt-1">Total: ${brl(order.total)}</h3>
+      </div>
+
+      <div class="bg-white p-4 rounded-2xl w-48 h-48 mx-auto flex items-center justify-center shadow-inner" id="qrcode-container"></div>
+
+      <div class="space-y-2">
+        <p class="text-xs text-neutral-400">Chave Pix (E-mail / CNPJ / Telefone):</p>
+        <div class="flex items-center gap-2 bg-dark-950 p-2.5 rounded-xl border border-white/10">
+          <input type="text" id="pix-key-input" readonly value="${CHAVE_PIX_LANCHONETE}" class="bg-transparent text-xs text-neutral-300 w-full focus:outline-none">
+          <button onclick="copyPixKey()" class="bg-white/10 hover:bg-white/20 text-white text-xs px-3 py-1.5 rounded-lg transition font-semibold shrink-0">
+            Copiar
+          </button>
+        </div>
+      </div>
+
+      <p class="text-xs text-neutral-500 leading-relaxed">
+        Após fazer o Pix, clique abaixo para enviar o pedido direto no WhatsApp do Juninho!
+      </p>
+
+      <button id="send-whatsapp-btn" class="w-full bg-brand-red hover:bg-red-600 text-white font-bold py-4 rounded-2xl transition flex items-center justify-center gap-2 shadow-lg shadow-brand-red/20">
+        <i data-lucide="message-square" class="w-5 h-5"></i>
+        Enviar Pedido no WhatsApp
+      </button>
+    </div>
+  `;
+
+  if (window.lucide) lucide.createIcons();
+
+  document.getElementById('send-whatsapp-btn').onclick = () => sendToWhatsApp(order);
+
+  setTimeout(() => {
+    const qrContainer = document.getElementById('qrcode-container');
+    if (qrContainer && window.QRCode) {
+      qrContainer.innerHTML = '';
+      new QRCode(qrContainer, {
+        text: CHAVE_PIX_LANCHONETE,
+        width: 160,
+        height: 160,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+      });
+    }
+  }, 100);
+}
+
+function copyPixKey() {
+  const input = document.getElementById('pix-key-input');
+  if (input) {
+    input.select();
+    navigator.clipboard.writeText(input.value);
+    alert('Chave Pix copiada!');
+  }
+}
+
+function sendToWhatsApp(order) {
+  const message = `*--- NOVO PEDIDO: JUNINHO LANCHES ---*\n\n` +
+    `*Cliente:* ${order.name}\n` +
+    `*Endereço:* ${order.address}\n` +
+    `*Forma de Pagamento:* ${order.paymentText}\n\n` +
+    `*ITENS DO PEDIDO:*\n${order.itemsList}\n\n` +
+    `*Observações:* ${order.obs}\n\n` +
+    `*TOTAL:* ${brl(order.total)}`;
+
+  const encodedMessage = encodeURIComponent(message);
+  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+
+  window.open(whatsappUrl, '_blank');
+
+  cart = {};
+  updateCartUI();
+  closeCheckoutModal();
 }
 
 window.onload = init;
