@@ -29,12 +29,82 @@
     }
   </script>
 
-  <!-- ANIMAÇÕES DE TRANSIÇÃO DO CARDÁPIO -->
   <style>
-    @keyframes fadeInUp {
+    /* Esconde barra de rolagem mantendo scroll funcional no mobile */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Container da Pill Deslizante estilo iOS */
+    .category-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      background-color: #121212;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      width: fit-content;
+      max-width: 100%;
+    }
+
+    /* A Pill Branca Móvel */
+    .active-pill {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      height: calc(100% - 8px);
+      width: 0px;
+      border-radius: 9999px;
+      background: #ffffff;
+      z-index: 1;
+      pointer-events: none;
+      transition: 
+        left 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+        width 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Botões da Categoria */
+    .category-btn {
+      position: relative;
+      z-index: 2;
+      background: transparent !important;
+      border: none !important;
+      color: #a3a3a3;
+      font-weight: 600;
+      font-size: 0.875rem;
+      padding: 10px 22px;
+      border-radius: 9999px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    .category-btn.active {
+      color: #090909 !important;
+      font-weight: 700;
+      transform: translateY(-1px);
+    }
+
+    /* Animações dos Cards de Lanche */
+    #menu-grid {
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+
+    #menu-grid.fade-out {
+      opacity: 0;
+      transform: scale(0.98) translateY(-6px);
+    }
+
+    @keyframes cardCascade {
       from {
         opacity: 0;
-        transform: translateY(14px);
+        transform: translateY(16px);
       }
       to {
         opacity: 1;
@@ -42,22 +112,8 @@
       }
     }
 
-    /* Classe que deve ser atribuída aos cards dos lanches no JS */
-    .menu-item {
-      animation: fadeInUp 0.35s ease-out forwards;
-    }
-
-    /* Suavização para a troca e hover nos botões de categorias */
-    .category-btn {
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .category-btn:hover {
-      transform: translateY(-2px);
-    }
-
-    .category-btn.active {
-      transform: scale(1.04);
+    .menu-item-anim {
+      animation: cardCascade 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
     }
   </style>
 </head>
@@ -114,7 +170,7 @@
     </div>
   </section>
 
-  <!-- SEÇÃO MAIS PEDIDOS -->
+  <!-- SEÇÃO MAIS PEDIDOS (BENTO GRID) -->
   <section id="destaques" class="max-w-7xl mx-auto px-6 py-20 border-t border-white/5">
     <div class="mb-12">
       <h2 class="text-xs uppercase tracking-widest text-brand-gold font-bold mb-2">Favoritos da Galera</h2>
@@ -122,7 +178,7 @@
     </div>
 
     <div id="destaques-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-      <!-- Injetado via JS -->
+      <!-- Injetado via JavaScript -->
     </div>
   </section>
 
@@ -134,18 +190,18 @@
         <p class="text-4xl font-extrabold tracking-tight">Escolha o seu lanche</p>
       </div>
       
-      <!-- Fabs de Categorias -->
-      <div id="categories-tabs" class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-        <!-- Injetado via JS -->
+      <!-- Fabs de Categorias com Pill Deslizante -->
+      <div id="categories-tabs" class="overflow-x-auto pb-2 no-scrollbar">
+        <!-- Injetado via JavaScript -->
       </div>
     </div>
 
     <div id="menu-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Injetado via JS -->
+      <!-- Injetado via JavaScript -->
     </div>
   </section>
 
-  <!-- PROVA SOCIAL -->
+  <!-- PROVA SOCIAL CLEAN -->
   <section id="avaliacoes" class="max-w-7xl mx-auto px-6 py-24 border-t border-white/5">
     <div class="text-center max-w-2xl mx-auto mb-16">
       <div class="flex justify-center text-brand-gold gap-1 mb-4">
@@ -164,7 +220,7 @@
         <p class="text-sm font-bold text-white">— João V.</p>
       </div>
       <div class="bg-dark-900 p-8 rounded-3xl border border-white/5 space-y-4">
-        <p class="text-neutral-300 font-light italic">"Sem miséria de ingrediente. O bacon vem crocante de verdade e o atendimento é nota 10."</p>
+        <p class="text-neutral-300 font-light italic">"Sem miséria de ingrediente. O bacon vem crocante de verdade e o atendimento é notas 10."</p>
         <p class="text-sm font-bold text-white">— Maria F.</p>
       </div>
       <div class="bg-dark-900 p-8 rounded-3xl border border-white/5 space-y-4">
