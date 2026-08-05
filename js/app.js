@@ -1,6 +1,6 @@
 // CONFIGURAÇÕES DA LANCHONETE
-const WHATSAPP_NUMBER = "5535999999999"; // Coloque o número real com DDD
-const CHAVE_PIX_LANCHONETE = "suachavepix@dominio.com"; // Chave Pix cadastrada
+const WHATSAPP_NUMBER = "5535991419208"; // WhatsApp do Juninho Lanches
+const CHAVE_PIX_LANCHONETE = "46345776000144"; // CNPJ (Chave Pix)
 
 // Dados de reserva (fallback) para o site não quebrar em testes locais (file://) ou falhas de fetch
 const FALLBACK_MENU = {
@@ -404,9 +404,9 @@ function showPixScreen(order) {
       <div class="bg-white p-4 rounded-2xl w-48 h-48 mx-auto flex items-center justify-center shadow-inner" id="qrcode-container"></div>
 
       <div class="space-y-2">
-        <p class="text-xs text-neutral-400">Chave Pix (E-mail / CNPJ / Telefone):</p>
+        <p class="text-xs text-neutral-400">Chave Pix CNPJ:</p>
         <div class="flex items-center gap-2 bg-dark-950 p-2.5 rounded-xl border border-white/10">
-          <input type="text" id="pix-key-input" readonly value="${CHAVE_PIX_LANCHONETE}" class="bg-transparent text-xs text-neutral-300 w-full focus:outline-none">
+          <input type="text" id="pix-key-input" readonly value="${CHAVE_PIX_LANCHONETE}" class="bg-transparent text-xs text-neutral-300 w-full focus:outline-none text-center font-mono font-bold">
           <button onclick="copyPixKey()" class="bg-white/10 hover:bg-white/20 text-white text-xs px-3 py-1.5 rounded-lg transition font-semibold shrink-0">
             Copiar
           </button>
@@ -414,7 +414,7 @@ function showPixScreen(order) {
       </div>
 
       <p class="text-xs text-neutral-500 leading-relaxed">
-        Após fazer o Pix, clique abaixo para enviar o pedido direto no WhatsApp do Juninho!
+        Após fazer o Pix, clique abaixo para enviar o pedido direto no WhatsApp da lanchonete!
       </p>
 
       <button id="send-whatsapp-btn" class="w-full bg-brand-red hover:bg-red-600 text-white font-bold py-4 rounded-2xl transition flex items-center justify-center gap-2 shadow-lg shadow-brand-red/20">
@@ -449,7 +449,7 @@ function copyPixKey() {
   if (input) {
     input.select();
     navigator.clipboard.writeText(input.value);
-    alert('Chave Pix copiada!');
+    alert('Chave Pix copiada com sucesso!');
   }
 }
 
