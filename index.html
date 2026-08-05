@@ -28,10 +28,42 @@
       }
     }
   </script>
+
+  <!-- ANIMAÇÕES DE TRANSIÇÃO DO CARDÁPIO -->
+  <style>
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Classe que deve ser atribuída aos cards dos lanches no JS */
+    .menu-item {
+      animation: fadeInUp 0.35s ease-out forwards;
+    }
+
+    /* Suavização para a troca e hover nos botões de categorias */
+    .category-btn {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .category-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .category-btn.active {
+      transform: scale(1.04);
+    }
+  </style>
 </head>
 <body class="bg-dark-950 text-white font-sans antialiased selection:bg-brand-red selection:text-white">
 
-  <!-- HEADER HEADER CLEAN / APPLE STYLE -->
+  <!-- HEADER CLEAN / APPLE STYLE -->
   <header class="sticky top-0 z-40 bg-dark-950/80 backdrop-blur-xl border-b border-white/5">
     <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -102,21 +134,9 @@
         <p class="text-4xl font-extrabold tracking-tight">Escolha o seu lanche</p>
       </div>
       
-      <div class="flex flex-wrap items-center gap-4 justify-between md:justify-end">
-        <!-- Fabs de Categorias -->
-        <div id="categories-tabs" class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-          <!-- Injetado via JS -->
-        </div>
-
-        <!-- Seletor de Visualização (Grade vs Lista Compacta) -->
-        <div class="flex items-center bg-dark-900 border border-white/10 p-1 rounded-full shrink-0">
-          <button id="view-grid-btn" onclick="setViewMode('grid')" title="Visualização em Grade" class="p-2 rounded-full text-white bg-white/10 transition">
-            <i data-lucide="layout-grid" class="w-4 h-4"></i>
-          </button>
-          <button id="view-list-btn" onclick="setViewMode('list')" title="Visualização em Lista Compacta" class="p-2 rounded-full text-neutral-400 hover:text-white transition">
-            <i data-lucide="list" class="w-4 h-4"></i>
-          </button>
-        </div>
+      <!-- Fabs de Categorias -->
+      <div id="categories-tabs" class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+        <!-- Injetado via JS -->
       </div>
     </div>
 
@@ -125,7 +145,7 @@
     </div>
   </section>
 
-  <!-- PROVA SOCIAL CLEAN -->
+  <!-- PROVA SOCIAL -->
   <section id="avaliacoes" class="max-w-7xl mx-auto px-6 py-24 border-t border-white/5">
     <div class="text-center max-w-2xl mx-auto mb-16">
       <div class="flex justify-center text-brand-gold gap-1 mb-4">
@@ -157,29 +177,14 @@
   <!-- DRAWER DO CARRINHO (SLIDE OVER) -->
   <div id="cart-drawer" class="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-dark-900 border-l border-white/10 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
     <div class="p-6 border-b border-white/10 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <h3 class="text-xl font-bold tracking-tight">Seu Pedido</h3>
-        <button onclick="continuarComprando()" class="text-xs text-brand-gold hover:underline flex items-center gap-1 font-semibold">
-          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Continuar Comprando
-        </button>
-      </div>
+      <h3 class="text-xl font-bold tracking-tight">Seu Pedido</h3>
       <button onclick="toggleCart()" class="text-neutral-400 hover:text-white">
         <i data-lucide="x" class="w-6 h-6"></i>
       </button>
     </div>
 
-    <div class="flex-1 overflow-y-auto p-6 space-y-6">
-      <div id="cart-items" class="space-y-4">
-        <!-- Itens do carrinho -->
-      </div>
-
-      <!-- Sugestões Rápidas de Adicionais -->
-      <div id="cart-suggestions" class="pt-4 border-t border-white/5">
-        <p class="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-3">Que tal adicionar?</p>
-        <div id="suggestions-list" class="space-y-2">
-          <!-- Injetado via JS -->
-        </div>
-      </div>
+    <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4">
+      <!-- Itens do carrinho -->
     </div>
 
     <div class="p-6 border-t border-white/10 bg-dark-950 space-y-4">
@@ -187,83 +192,13 @@
         <span>Total</span>
         <span id="cart-total" class="text-brand-gold">R$ 0,00</span>
       </div>
-      <button onclick="abrirModalCheckout()" id="checkout-btn" disabled class="w-full bg-brand-red disabled:opacity-50 text-white font-bold py-4 rounded-2xl hover:bg-red-600 transition shadow-lg shadow-brand-red/20">
+      <button onclick="startCheckout()" id="checkout-btn" disabled class="w-full bg-brand-red disabled:opacity-50 text-white font-bold py-4 rounded-2xl hover:bg-red-600 transition">
         Avançar para Pagamento
       </button>
     </div>
   </div>
 
-  <!-- MODAL DE CHECKOUT & PAGAMENTO PIX -->
-  <div id="checkout-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-dark-900 border border-white/10 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 my-8 relative">
-      <button onclick="fecharModalCheckout()" class="absolute top-6 right-6 text-neutral-400 hover:text-white">
-        <i data-lucide="x" class="w-6 h-6"></i>
-      </button>
-
-      <h3 class="text-2xl font-extrabold tracking-tight">Finalizar Pedido</h3>
-
-      <form id="checkout-form" onsubmit="event.preventDefault(); processarCheckout();" class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-neutral-400 uppercase mb-1">Seu Nome</label>
-          <input type="text" id="cust-name" required placeholder="Digite seu nome completo" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-red">
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-neutral-400 uppercase mb-1">Seu WhatsApp</label>
-          <input type="tel" id="cust-phone" required placeholder="(35) 99999-9999" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-red">
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-neutral-400 uppercase mb-1">Endereço de Entrega (Rua, Nº, Bairro)</label>
-          <input type="text" id="cust-address" required placeholder="Rua Wenceslau Braz, 100 - Centro" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-red">
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-neutral-400 uppercase mb-2">Forma de Pagamento</label>
-          <div class="grid grid-cols-3 gap-3">
-            <button type="button" onclick="selectPayment('pix')" id="pay-pix" class="bg-dark-950 border border-brand-red text-white py-3 rounded-xl font-bold text-xs flex flex-col items-center gap-1">
-              <i data-lucide="qr-code" class="w-4 h-4 text-brand-gold"></i> Pix
-            </button>
-            <button type="button" onclick="selectPayment('cartao')" id="pay-cartao" class="bg-dark-950 border border-white/10 text-neutral-400 py-3 rounded-xl font-bold text-xs flex flex-col items-center gap-1">
-              <i data-lucide="credit-card" class="w-4 h-4"></i> Cartão
-            </button>
-            <button type="button" onclick="selectPayment('dinheiro')" id="pay-dinheiro" class="bg-dark-950 border border-white/10 text-neutral-400 py-3 rounded-xl font-bold text-xs flex flex-col items-center gap-1">
-              <i data-lucide="banknote" class="w-4 h-4"></i> Dinheiro
-            </button>
-          </div>
-        </div>
-
-        <div id="troco-box" class="hidden">
-          <label class="block text-xs font-semibold text-neutral-400 uppercase mb-1">Troco para quanto?</label>
-          <input type="text" id="cust-troco" placeholder="Ex: 50,00" class="w-full bg-dark-950 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-red">
-        </div>
-
-        <!-- Seção do Pix com QR Code -->
-        <div id="pix-section" class="bg-dark-950 border border-white/10 p-5 rounded-2xl text-center space-y-3">
-          <p class="text-xs font-bold text-brand-gold uppercase tracking-wider">Pagamento via Pix Instântaneo</p>
-          <div id="qrcode" class="flex justify-center p-2 bg-white rounded-xl max-w-[190px] mx-auto"></div>
-          
-          <div class="space-y-2">
-            <input type="text" id="pix-copia-cola" readonly class="w-full bg-dark-900 text-xs border border-white/10 rounded-lg px-3 py-2 text-center text-neutral-300 font-mono select-all">
-            <button type="button" id="btn-copiar-pix" onclick="copiarChavePix()" class="w-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs py-2.5 rounded-xl transition">
-              Copiar Chave Pix (CNPJ)
-            </button>
-          </div>
-          <p class="text-[11px] text-neutral-400">Após realizar o pagamento, envie o comprovante junto com a mensagem no WhatsApp!</p>
-        </div>
-
-        <button type="submit" class="w-full bg-brand-red text-white font-bold py-4 rounded-2xl hover:bg-red-600 transition shadow-lg shadow-brand-red/30 text-base">
-          Enviar Pedido no WhatsApp 🚀
-        </button>
-      </form>
-    </div>
-  </div>
-
   <script src="js/app.js"></script>
-  <script src="js/checkout.js"></script>
-  <script src="js/pix.js"></script>
-  <script>
-    lucide.createIcons();
-  </script>
+  <script>lucide.createIcons();</script>
 </body>
 </html>
