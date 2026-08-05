@@ -66,13 +66,16 @@ async function init() {
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     MENU_DATA = await res.json();
   } catch (e) {
-    console.warn("Não foi possível carregar via fetch (normal ao rodar direto por arquivo local file://). Usando dados internos de segurança.");
+    console.warn("Não foi possível carregar via fetch. Usando dados internos de segurança.");
     MENU_DATA = FALLBACK_MENU;
   }
 
   renderCategories();
   renderMenu(activeCategory);
   renderDestaques();
+
+  // Recalcula pill em mudanças de redimensionamento da janela
+  window.addEventListener('resize', updatePillPosition);
 }
 
 function brl(v) {
@@ -83,24 +86,61 @@ function renderCategories() {
   const container = document.getElementById('categories-tabs');
   if (!container) return;
 
-  container.innerHTML = MENU_DATA.categories.map(c => {
-    const isActive = c.id === activeCategory;
-    const activeClasses = isActive 
-      ? 'active bg-white text-black border-white shadow-lg' 
-      : 'bg-dark-900 text-neutral-400 border-white/10 hover:border-white/30 hover:text-white';
+  container.innerHTML = `
+    <div class="category-wrapper" id="category-wrapper">
+      <div class="active-pill" id="active-pill"></div>
+      ${MENU_DATA.categories.map(c => {
+        const isActive = c.id === activeCategory;
+        return `
+          <button 
+            data-cat="${c.id}" 
+            onclick="switchCategory('${c.id}')" 
+            class="category-btn ${isActive ? 'active' : ''}">
+            ${c.label}
+          </button>
+        `;
+      }).join('')}
+    </div>
+  `;
 
-    return `
-      <button onclick="switchCategory('${c.id}')" class="category-btn px-6 py-3 rounded-full text-sm font-semibold border whitespace-nowrap ${activeClasses}">
-        ${c.label}
-      </button>
-    `;
-  }).join('');
+  requestAnimationFrame(() => updatePillPosition());
+}
+
+function updatePillPosition() {
+  const pill = document.getElementById('active-pill');
+  const activeBtn = document.querySelector(`.category-btn[data-cat="${activeCategory}"]`);
+
+  if (pill && activeBtn) {
+    pill.style.left = `${activeBtn.offsetLeft}px`;
+    pill.style.width = `${activeBtn.offsetWidth}px`;
+  }
 }
 
 function switchCategory(catId) {
+  if (activeCategory === catId) return;
+
   activeCategory = catId;
-  renderCategories();
-  renderMenu(catId);
+
+  // Atualiza botões
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-cat') === catId);
+  });
+
+  // Anima a Pill Branca deslizando
+  updatePillPosition();
+
+  // Transição do Grid com Scale + Fade + Stagger
+  const grid = document.getElementById('menu-grid');
+  if (grid) {
+    grid.classList.add('fade-out');
+    
+    setTimeout(() => {
+      renderMenu(catId);
+      grid.classList.remove('fade-out');
+    }, 200);
+  } else {
+    renderMenu(catId);
+  }
 }
 
 function renderMenu(catId) {
@@ -115,7 +155,7 @@ function renderMenu(catId) {
   }
   
   container.innerHTML = items.map((item, index) => `
-    <div class="menu-item bg-dark-900 rounded-3xl overflow-hidden border border-white/5 hover:border-white/20 transition-all duration-300 group flex flex-col justify-between" style="animation-delay: ${index * 0.04}s;">
+    <div class="menu-item-anim bg-dark-900 rounded-3xl overflow-hidden border border-white/5 hover:border-white/20 transition-all duration-300 group flex flex-col justify-between" style="animation-delay: ${index * 0.04}s;">
       <div>
         <div class="h-52 overflow-hidden relative">
           <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
