@@ -1,7 +1,7 @@
 /* Configuração do Lojista */
 const CONFIG = {
-  whatsapp: '553591419208',
-  pixKey: '46345776000144', // CNPJ sem formatação para a geração do QR Code Pix
+  whatsapp: '5535991419208',
+  pixKey: 'CHAVE-PIX-DO-JUNINHO-AQUI',
   merchantName: 'JUNINHO LANCHES',
   merchantCity: 'SAO LOURENCO',
 };
