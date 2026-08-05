@@ -190,9 +190,23 @@
         <p class="text-4xl font-extrabold tracking-tight">Escolha o seu lanche</p>
       </div>
       
-      <!-- Fabs de Categorias com Pill Deslizante -->
-      <div id="categories-tabs" class="overflow-x-auto pb-2 no-scrollbar">
-        <!-- Injetado via JavaScript -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <!-- SWITCH GRADE / LISTA COMPACTA -->
+        <div class="flex items-center gap-1 bg-dark-900 border border-white/10 p-1 rounded-full">
+          <button id="view-grid-btn" onclick="setViewMode('grid')" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 bg-white/10 text-white" title="Visualização em Grade">
+            <i data-lucide="layout-grid" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">Grade</span>
+          </button>
+          <button id="view-list-btn" onclick="setViewMode('list')" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 text-neutral-400 hover:text-white" title="Visualização em Lista">
+            <i data-lucide="list" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">Lista</span>
+          </button>
+        </div>
+
+        <!-- Fabs de Categorias com Pill Deslizante -->
+        <div id="categories-tabs" class="overflow-x-auto pb-2 no-scrollbar">
+          <!-- Injetado via JavaScript -->
+        </div>
       </div>
     </div>
 
@@ -231,26 +245,54 @@
   </section>
 
   <!-- DRAWER DO CARRINHO (SLIDE OVER) -->
-  <div id="cart-drawer" class="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-dark-900 border-l border-white/10 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+  <div id="cart-drawer" class="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-dark-900 border-l border-white/10 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col justify-between">
     <div class="p-6 border-b border-white/10 flex items-center justify-between">
-      <h3 class="text-xl font-bold tracking-tight">Seu Pedido</h3>
-      <button onclick="toggleCart()" class="text-neutral-400 hover:text-white">
+      <div class="flex items-center gap-2">
+        <i data-lucide="shopping-bag" class="w-5 h-5 text-brand-gold"></i>
+        <h3 class="text-xl font-bold tracking-tight">Seu Pedido</h3>
+      </div>
+      <button onclick="toggleCart()" class="text-neutral-400 hover:text-white p-1">
         <i data-lucide="x" class="w-6 h-6"></i>
       </button>
     </div>
 
-    <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4">
-      <!-- Itens do carrinho -->
+    <!-- ÁREA DE ITENS + SUGESTÕES COM SCROLL -->
+    <div class="flex-1 overflow-y-auto p-6 space-y-6" id="cart-content-wrapper">
+      <div id="cart-items" class="space-y-4">
+        <!-- Itens do carrinho -->
+      </div>
+
+      <!-- CONTAINER DE SUGESTÕES DE COMPRA -->
+      <div id="cart-suggestions-container" class="pt-4 border-t border-white/10 hidden">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-3 flex items-center gap-1.5">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-brand-gold"></i>
+          Que tal adicionar ao pedido?
+        </h4>
+        <div id="cart-suggestions" class="space-y-2">
+          <!-- Injetado via JS -->
+        </div>
+      </div>
     </div>
 
+    <!-- FOOTER DO CARRINHO COM "CONTINUAR COMPRANDO" -->
     <div class="p-6 border-t border-white/10 bg-dark-950 space-y-4">
       <div class="flex justify-between items-center text-lg font-bold">
-        <span>Total</span>
-        <span id="cart-total" class="text-brand-gold">R$ 0,00</span>
+        <span class="text-sm text-neutral-400 font-normal">Total do pedido:</span>
+        <span id="cart-total" class="text-xl text-brand-gold font-extrabold">R$ 0,00</span>
       </div>
-      <button onclick="startCheckout()" id="checkout-btn" disabled class="w-full bg-brand-red disabled:opacity-50 text-white font-bold py-4 rounded-2xl hover:bg-red-600 transition">
-        Avançar para Pagamento
-      </button>
+
+      <div class="space-y-2">
+        <button onclick="startCheckout()" id="checkout-btn" disabled class="w-full bg-brand-red disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 rounded-2xl hover:bg-red-600 transition flex items-center justify-center gap-2 shadow-lg shadow-brand-red/20">
+          <i data-lucide="check-circle" class="w-5 h-5"></i>
+          Avançar para Pagamento
+        </button>
+
+        <!-- BOTÃO CONTINUAR COMPRANDO -->
+        <button onclick="toggleCart(false)" class="w-full bg-white/5 hover:bg-white/10 text-neutral-300 font-semibold text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          Continuar Comprando
+        </button>
+      </div>
     </div>
   </div>
 
