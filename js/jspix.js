@@ -1,7 +1,7 @@
-/* Configuração do Lojista */
+/* Configuração do Lojista com dados oficiais */
 const CONFIG = {
   whatsapp: '5535991419208',
-  pixKey: 'CHAVE-PIX-DO-JUNINHO-AQUI',
+  pixKey: '46345776000144', // Chave CNPJ do Juninho Lanches
   merchantName: 'JUNINHO LANCHES',
   merchantCity: 'SAO LOURENCO',
 };
@@ -47,22 +47,22 @@ function gerarPix(total) {
     qrContainer.innerHTML = '';
     new QRCode(qrContainer, {
       text: currentPixCode,
-      width: 180,
-      height: 180,
+      width: 170,
+      height: 170,
       colorDark: '#090909',
       colorLight: '#FFFFFF'
     });
   }
   const copiaColaInput = document.getElementById('pix-copia-cola');
-  if (copiaColaInput) copiaColaInput.value = currentPixCode;
+  if (copiaColaInput) copiaColaInput.value = CONFIG.pixKey;
 }
 
 function copiarChavePix() {
-  navigator.clipboard.writeText(currentPixCode).then(() => {
+  navigator.clipboard.writeText(CONFIG.pixKey).then(() => {
     const btn = document.getElementById('btn-copiar-pix');
     if (btn) {
       const orig = btn.innerText;
-      btn.innerText = 'Copiado! ✓';
+      btn.innerText = 'CNPJ Copiado! ✓';
       setTimeout(() => btn.innerText = orig, 2000);
     }
   });
